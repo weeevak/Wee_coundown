@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown to August 1, 2040</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            text-align: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .countdown-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            width: 90%;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #f8f8f8;
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            min-width: 120px;
+            backdrop-filter: blur(5px);
+        }
+        .number {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #aaa;
+        }
+        .visitor-counter {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .counter-icon {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .countdown-box {
+                min-width: 80px;
+                padding: 1rem;
+            }
+            .number {
+                font-size: 2rem;
+            }
+            .label {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    <!-- Font Awesome for the eye icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="countdown-container">
+        <h1>Countdown to August 1, 2040</h1>
+        
+        <div class="countdown">
+            <div class="countdown-box">
+                <div class="number" id="years">00</div>
+                <div class="label">Years</div>
+            </div>
+            <div class="countdown-box">
+                <div class="number" id="days">00</div>
+                <div class="label">Days</div>
+            </div>
+            <div class="countdown-box">
+                <div class="number" id="hours">00</div>
+                <div class="label">Hours</div>
+            </div>
+            <div class="countdown-box">
+                <div class="number" id="minutes">00</div>
+                <div class="label">Minutes</div>
+            </div>
+            <div class="countdown-box">
+                <div class="number" id="seconds">00</div>
+                <div class="label">Seconds</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="visitor-counter">
+        <i class="counter-icon fas fa-eye"></i>
+        <span>Visitors: <span id="visitor-count">Loading...</span></span>
+    </div>
+
+    <script>
+        // Countdown functionality
+        const targetDate = new Date('2040-08-01T00:00:00').getTime();
+        
+        const updateCountdown = function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('years').innerHTML = '00';
+                document.getElementById('days').innerHTML = '00';
+                document.getElementById('hours').innerHTML = '00';
+                document.getElementById('minutes').innerHTML = '00';
+                document.getElementById('seconds').innerHTML = '00';
+                return;
+            }
+            
+            const years = Math.floor(distance / (1000 * 60 * 60 * 24 * 365));
+            const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('years').innerHTML = years.toString().padStart(2, '0');
+            document.getElementById('days').innerHTML = days.toString().padStart(2, '0');
+            document.getElementById('hours').innerHTML = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerHTML = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerHTML = seconds.toString().padStart(2, '0');
+        };
+
+        const countdownInterval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call
+
+        // Visitor counter functionality
+        // Using localStorage for client-side tracking (for demo purposes)
+        // In a real implementation, you would use a server-side solution
+        document.addEventListener('DOMContentLoaded', function() {
+            let visitCount = localStorage.getItem('pageVisits');
+            
+            if (!visitCount) {
+                visitCount = 1;
+            } else {
+                visitCount = parseInt(visitCount) + 1;
+            }
+            
+            localStorage.setItem('pageVisits', visitCount);
+            document.getElementById('visitor-count').textContent = visitCount;
+            
+            // For a real implementation, you would send this to a server:
+            // fetch('/update-counter', { method: 'POST' });
+        });
+
+        // Note: For a production visitor counter, you would need:
+        // 1. A backend service to track unique visitors (PHP, Node.js, etc.)
+        // 2. Database storage to persist counts between sessions
+        // 3. Possibly IP tracking to identify unique visitors
+    </script>
+</body>
+</html>
